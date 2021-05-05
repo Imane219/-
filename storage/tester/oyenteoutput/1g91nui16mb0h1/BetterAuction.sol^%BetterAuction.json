@@ -1,0 +1,26 @@
+{
+ "vulnerabilities": {
+  "callstack": [], 
+  "time_dependency": [], 
+  "reentrancy": [], 
+  "integer_overflow": [
+   "../test/BetterAuction.sol:99:26: Warning: Integer Overflow.\n            var amount = pendingReturns[msg.sender] + msg.value\nInteger Overflow occurs if:\n    highestBidder = 0\n    pendingReturns[msg.sender] = 59933801872486525315945079450458544024336375785647050927631397116808444188657\n    highestBid = 5128\n    biddingPeriod = 72825107752487271033108327959352970742822017827498540077575192438408105453632\n    auctionStart = 302231495255910780699807872", 
+   "../test/BetterAuction.sol:143:26: Warning: Integer Overflow.\n        var proposalID = proposals.length++\nInteger Overflow occurs if:\n    members[msg.sender] = 32\n    proposals.length = 115792089237316195423570985008687907853269984665640564039457584007913129639935\n    biddingPeriod = 1725595302662647518307909316892328820825552128785970392040711164805120\n    auctionStart = 3618532350458486830318207062805188267912678125976472706140843972336679927841", 
+   "../test/BetterAuction.sol:96:13: Warning: Integer Overflow.\n            highestBid += msg.value\nInteger Overflow occurs if:\n    highestBidder = 0\n    pendingReturns[msg.sender] = 59933801872486525315945079450458544024336375785647050927631397116808444188657\n    highestBid = 55830042837781515022797592528562007505319457821983107259572052650850307276800\n    biddingPeriod = 72825107752487271033108327959352970742822017827498540077575192438408105453632\n    auctionStart = 302231495255910780699807872", 
+   "../test/BetterAuction.sol:81:16: Warning: Integer Overflow.\n        return auctionStart + biddingPeriod\nInteger Overflow occurs if:\n    biddingPeriod = 32623128806001664470756005657222943590852104380606850355640338314056771870884\n    auctionStart = 101892367382614047911953773562006681177287645093425128934010202196043791908004", 
+   "../test/BetterAuction.sol:17:5: Warning: Integer Overflow.\n    Proposal[] public proposals"
+  ], 
+  "parity_multisig_bug_2": [], 
+  "integer_underflow": [], 
+  "money_concurrency": [
+   [
+    "../test/BetterAuction.sol:135:18: Warning: Transaction-Ordering Dependency.\n            if (!msg.sender.send(amount + msg.value)"
+   ], 
+   [
+    "../test/BetterAuction.sol:135:18: Warning: Transaction-Ordering Dependency.\n            if (!msg.sender.send(amount + msg.value)"
+   ]
+  ], 
+  "assertion_failure": []
+ }, 
+ "evm_code_coverage": "74.7"
+}

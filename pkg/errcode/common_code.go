@@ -6,9 +6,6 @@ var (
 	ServerError              = NewError(10000000, "服务器内部错误")
 	InvalidParams            = NewError(10000001, "函数入参错误")
 	NotFound                 = NewError(10000002, "未找到")
-	SessionError	= NewError(10000003,"Session错误")
-
-	ErrorUploadFileFail	= NewError(200300001,"上传文件失败")
 
 	//UnauthorizedAuthNotExist = NewError(10000003,
 	//	"鉴权失败,找不到对应的AppKey和AppSecret")

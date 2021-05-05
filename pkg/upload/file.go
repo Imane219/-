@@ -14,9 +14,6 @@ type FileType int
 
 const TypeContract = iota + 1
 
-func GetSavePath() string {
-	return configs.UploadSavePath
-}
 
 func CheckSavePathNotExist(dst string) bool {
 	_,err := os.Stat(dst)
@@ -40,6 +37,12 @@ func CheckContainExt(t FileType,filename string) bool {
 	return false
 }
 
+//检测文件权限是否不足够
+func CheckNotPermission(dst string) bool {
+	_, err:=os.Stat(dst)
+	return os.IsPermission(err)
+}
+
 func CheckOutMaxSize(t FileType, f multipart.File) bool {
 	content,_ := ioutil.ReadAll(f)
 	size := len(content)
@@ -60,4 +63,14 @@ func SaveFile(file *multipart.FileHeader, dst string) error {
 	defer out.Close()
 	_,err = io.Copy(out,src)
 	return err
+}
+
+func GetDirFiles(dirPath string) []string {
+	//files,_:=filepath.Glob(dirPath+"/*")
+	files ,_ := ioutil.ReadDir(dirPath)
+	filesName := make([]string,0)
+	for _, file := range files {
+		filesName = append(filesName, file.Name())
+	}
+	return filesName
 }
