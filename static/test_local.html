@@ -5,47 +5,49 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" href="static/icon.ico">
+    <link rel="icon" href="icon.ico">
 
     <title>智能合约代码安全审计平台</title>
 
-    <link href="static/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="static/bootstrap-table-develop/dist/bootstrap-table.css">
-    <link href="static/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-    <link href="static/jumbotron-narrow.css" rel="stylesheet">
-    <script src="static/assets/js/ie-emulation-modes-warning.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="bootstrap-table-develop/dist/bootstrap-table.css">
+    <link href="assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="jumbotron-narrow.css" rel="stylesheet">
+    <script src="assets/js/ie-emulation-modes-warning.js"></script>
     <!--<script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>-->
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="static/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="static/bootstrap-table-develop/dist/bootstrap-table.js"></script>
-    <script type="text/javascript" src="static/bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="bootstrap-table-develop/dist/bootstrap-table.js"></script>
+    <script type="text/javascript" src="bootstrap-table-develop/dist/locale/bootstrap-table-zh-CN.js"></script>
 
     <style>
         p {
             white-space: pre
         }
+
     </style>
     <script>
         var filerst = [];
         var id, timetext;
         var detectdic = {}, resultdic = {}, stopdic = {}, resetdic = {};
         var tableColumns = [
-            { field: 'file_name', title: '文件名', sortable: false },
-            { field: 'contract_name', title: '合约名', sortable: false },
-            { field: 'coverage', title: '覆盖率', sortable: false },
-            { field: 'branches', title: '分支数', sortable: false },
-            { field: 'gasless_send', title: '无gas的send函数使用', sortable: false },
-            { field: 'exception_disorder', title: '异常处理不一致', sortable: false },
-            { field: 'reentrancy', title: '重入', sortable: false },
-            { field: 'timestamp_dependency', title: '时间戳依赖', sortable: false },
-            { field: 'block_number_dependency', title: '区块号依赖', sortable: false },
-            { field: 'delegate_call', title: 'delegate call漏洞', sortable: false },
-            { field: 'freezing_ether', title: '冻结以太', sortable: false },
-            { field: 'integer_overflow', title: '整数上溢', sortable: false },
-            { field: 'integer_underflow', title: '整数下溢', sortable: false },
-            { field: 'money_concurrency', title: '交易顺序依赖', sortable: false },
-        ];
-        var data1 = [];
+                { field: 'file_name', title: '文件名', sortable: false },
+                { field: 'contract_name', title: '合约名', sortable: false },
+                { field: 'coverage', title: '覆盖率', sortable: false },
+                { field: 'branches', title: '分支数', sortable: false },
+                { field: 'gasless_send', title: '无gas的send函数使用', sortable: false },
+                { field: 'exception_disorder', title: '异常处理不一致', sortable: false },
+                { field: 'reentrancy', title: '重入', sortable: false },
+                { field: 'timestamp_dependency', title: '时间戳依赖', sortable: false },
+                { field: 'block_number_dependency', title: '区块号依赖', sortable: false },
+                { field: 'delegate_call', title: 'delegate call漏洞', sortable: false },
+                { field: 'freezing_ether', title: '冻结以太', sortable: false },
+                { field: 'integer_overflow', title: '整数上溢', sortable: false },
+                { field: 'integer_underflow', title: '整数下溢', sortable: false },
+                { field: 'money_concurrency', title: '交易顺序依赖', sortable: false },
+            ];
+        var row= { file_name: "BetterAuction.sol", contract_name: "BetterAuction", coverage: "74.7%", branches: 24, gasless_send: "true", exception_disorder: "false", reentrancy: "false", timestamp_dependency: "false", block_number_dependency: "false", delegate_call: "false", freezing_ether: "false", integer_overflow: "false", integer_underflow: "false", money_concurrency: "false" };
+        var data1=[],data=[];
 
         function gettext(a) {
             timetext = a;
@@ -53,12 +55,12 @@
             //document.getElementById("resultp").append(str + "\n" + "---------------\n");
         }
 
-        function display_table() {
+        function display_table(){
             $('#table').bootstrapTable('destroy');   //动态加载表格之前，先销毁表格
 
             $('#table').bootstrapTable({//表格初始化
                 columns: tableColumns,  //表头
-                data: data1,
+                data: data1, 
                 //width: 300,
                 //height: 268,
                 //method: 'get',
@@ -102,7 +104,7 @@
                 },
                 success: function (data) {
                     id = data.id;
-                    str = "uploaded files:\n";
+                    str="uploaded files:\n";
                     for (var i = 0; i < data.uploaded_file.length; i++) {
                         str += data.uploaded_file[i];
                         str += "\n";
@@ -142,8 +144,95 @@
         }
         function result() {
             resultdic.id = id;
+
+            data = {
+                "id": "1g91nui16mb0h1",
+                "outputs": [
+                    {
+                        "file_name": "BetterAuction.sol",
+                        "contract_name": "BetterAuction",
+                        "sfuzz": {
+                            "duration": "0 days, 0 hrs, 2 min, 0 sec",
+                            "coverage": "41%",
+                            "branches": 24,
+                            "predicates": 4,
+                            "tracebits": 10
+                        },
+                        "oyente": {
+                            "coverage": "74.7%"
+                        },
+                        "vulnerabilities": {
+                            "gasless_send": true,
+                            "exception_disorder": true,
+                            "reentrancy": false,
+                            "timestamp_dependency": false,
+                            "block_number_dependency": false,
+                            "delegate_call": false,
+                            "freezing_ether": false,
+                            "integer_overflow": true,
+                            "integer_underflow": false,
+                            "callstack": false,
+                            "parity_multsig_bug_2": false,
+                            "money_concurrency": true,
+                            "assertion_failure": false
+                        }
+                    },
+                    {
+                        "file_name": "LuckyDoubler.sol",
+                        "contract_name": "LuckyDoubler",
+                        "sfuzz": {
+                            "duration": "0 days, 0 hrs, 2 min, 0 sec",
+                            "coverage": "41%",
+                            "branches": 24,
+                            "predicates": 4,
+                            "tracebits": 10
+                        },
+                        "oyente": {
+                            "coverage": ""
+                        },
+                        "vulnerabilities": {
+                            "gasless_send": true,
+                            "exception_disorder": true,
+                            "reentrancy": false,
+                            "timestamp_dependency": false,
+                            "block_number_dependency": false,
+                            "delegate_call": false,
+                            "freezing_ether": false,
+                            "integer_overflow": false,
+                            "integer_underflow": false,
+                            "callstack": false,
+                            "parity_multsig_bug_2": false,
+                            "money_concurrency": false,
+                            "assertion_failure": false
+                        }
+                    }
+                ],
+                "state": "running"
+            }
+            data1 = [];
+            for (var i = 0; i < data.outputs.length; i++) {
+                data1.push({'key': 'file_name', 'value':"n", 'key': 'contract_name', 'value': "n", 'key': 'coverage', 'value': "n", 'key': 'branches', 'value': "n", 'key': 'gasless_send', 'value': "n", 'key': 'exception_disorder', 'value': "n", 'key': 'reentrancy', 'value': "n", 'key': 'timestamp_dependency', 'value': "n", 'key': 'block_number_dependency', 'value': "n", 'key': 'delegate_call', 'value': "n", 'key': 'freezing_ether', 'value': "n", 'key': 'integer_underflow', 'value': "n", 'key': 'integer_overflow', 'value': "n", 'key': 'money_concurrency', 'value': "n"})
+                data1[i].file_name = data.outputs[i].file_name;
+                data1[i].contract_name = data.outputs[i].contract_name;
+                data1[i].coverage = data.outputs[i].oyente.coverage;
+                data1[i].branches = data.outputs[i].sfuzz.branches;
+                data1[i].gasless_send = data.outputs[i].vulnerabilities.gasless_send;
+                data1[i].exception_disorder = data.outputs[i].vulnerabilities.exception_disorder;
+                data1[i].reentrancy = data.outputs[i].vulnerabilities.reentrancy;
+                data1[i].timestamp_dependency = data.outputs[i].vulnerabilities.timestamp_dependency;
+                data1[i].block_number_dependency = data.outputs[i].vulnerabilities.block_number_dependency;
+                data1[i].delegate_call = data.outputs[i].vulnerabilities.delegate_call;
+                data1[i].freezing_ether = data.outputs[i].vulnerabilities.freezing_ether;
+                data1[i].integer_overflow = data.outputs[i].vulnerabilities.integer_overflow;
+                data1[i].integer_underflow = data.outputs[i].vulnerabilities.integer_underflow;
+                data1[i].money_concurrency = data.outputs[i].vulnerabilities.money_concurrency;
+            }
+            display_table();
+
+
+            //var tmp;
             $.ajax({
-                url: '/result',
+                url:'/result',
                 type: 'post',
                 data: resultdic,
                 dataType: "json",
@@ -191,9 +280,9 @@
                 data: stopdic,
                 dataType: "json",
                 error: function (data) {
-                    data = { "code": 111, "msg": "参数错误", "details": ["details1", "details2"] };
+                    data={"code":111,"msg":"参数错误","details":["details1","details2"]};
                     str = "ERROR!\ncode:" + data.code + "\n";
-                    str += "Message:" + data.msg + "\n";
+                    str += "Message:"+data.msg + "\n";
                     str += "Details:\n"
                     for (var i = 0; i < data.details.length; i++) {
                         str += data.details[i];
@@ -203,7 +292,7 @@
                 },
                 success: function (data) {
                     var rstid = data.id;
-
+                    
                     data1 = [];
                     for (var i = 0; i < data.outputs.length; i++) {
                         data1.push({ 'key': 'file_name', 'value': "n", 'key': 'contract_name', 'value': "n", 'key': 'coverage', 'value': "n", 'key': 'branches', 'value': "n", 'key': 'gasless_send', 'value': "n", 'key': 'exception_disorder', 'value': "n", 'key': 'reentrancy', 'value': "n", 'key': 'timestamp_dependency', 'value': "n", 'key': 'block_number_dependency', 'value': "n", 'key': 'delegate_call', 'value': "n", 'key': 'freezing_ether', 'value': "n", 'key': 'integer_underflow', 'value': "n", 'key': 'integer_overflow', 'value': "n", 'key': 'money_concurrency', 'value': "n" })
@@ -294,5 +383,4 @@
         </footer>
     </div>
 </body>
-
 </html>
