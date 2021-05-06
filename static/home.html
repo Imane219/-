@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="static/icon.ico">
+
+    <title>智能合约代码安全审计平台</title>
+
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="static/jumbotron-narrow.css" rel="stylesheet">
+    <script src="static/assets/js/ie-emulation-modes-warning.js"></script>
+    <script src="http://apps.bdimg.com/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+
+    <style>p{white-space:pre}</style>
+    <script>
+    var filerst=[];  
+    var id,timetext;
+    var dic={'name': 'Barbie', 'age': 20};
+    var detectdic={},resultdic={},stopdic={},resetdic={};
+   
+    function gettext(a) {
+        timetext = a;
+        str="\n您已选择"+a+"!";
+        document.getElementById("resultp").append(str+"\n"+"---------------\n");
+    }
+
+    function upload()
+    {
+        document.getElementById("fileField").click();
+        var files = document.getElementById("fileField").files;
+        for(var i=0; i< files.length; i++){
+            filerst.push(fileField.files[i].name);
+        }
+        $.ajax({
+                url:'d:/upload/',
+                type:'post',
+                data:filerst,
+                contentType:'application/json',
+                dataType:"json",
+                error:function(data){
+                    document.getElementById("uploaderr").append("\nERROR"+data.code+"\n");
+                    document.getElementById("uploaderr").append(data.msg+"\n");
+                    document.getElementById("uploaderr").append("Details:\n");
+                    for(var i=0;i<data.details.length;i++){
+                        document.getElementById("uploaderr").append(data.details[i]);
+                    }
+
+                },
+                success:function (data) {
+                    id=data.id;
+
+                }
+            });
+        alert("done");
+    }
+
+    function detect()
+    {
+        timetext = timetext[0] - '0';
+        detectdic.run_time = timetext * 10;
+        detectdic.id=id;
+        //document.getElementById("detectp").innerHTML="漏洞分析时间为"+detectdic.time+"秒"
+        //alert(testtime);
+        $.ajax({
+                url:'/detect',
+                type:'post',
+                data:detectdic,
+                dataType:"json",
+                error:function(data){
+                    document.getElementById("resultp").append("\nERROR"+data.code+"\n");
+                    document.getElementById("resultp").append(data.msg+"\n");
+                    document.getElementById("resultp").append("Details:\n");
+                    for(var i=0;i<data.details.length;i++){
+                        document.getElementById("resultp").append(data.details[i]);
+                    }
+                },
+                success:function (data){
+                    str = "id:"+data.id+"\n"+"state:"+data.state;
+                    alert(str);
+                }
+            });
+    }
+    function result()
+    {
+        resultdic.id=id;
+        //var tmp;
+        $.ajax({
+               // url:'/result',
+                url:'result.json',
+                type:'post',
+                data:resultdic,
+                dataType:"json",
+                error:function(data){
+                    document.getElementById("resultp").append("\nERROR"+data.code+"\n");
+                    document.getElementById("resultp").append(data.msg+"\n");
+                    document.getElementById("resultp").append("Details:\n");
+                    for(var i=0;i<data.details.length;i++){
+                        document.getElementById("resultp").append(data.details[i]);
+                    }
+                },
+                success:function (data) {
+                    var rstid=data.id;
+                    //alert(rstid);
+                    for (var i=0;i<data.outputs.length;i++)
+                    {
+                        var vul=data.outputs[i].vulnerabilities;
+                        document.getElementById("resultp").append("\nfile_name: "+data.outputs[i].file_name+'\n');
+                        document.getElementById("resultp").append("contract_name: "+data.outputs[i].contract_name+'\n');
+                        document.getElementById("resultp").append("Vulnerabilities:\n");
+                        for( var key in vul){
+                            document.getElementById("resultp").append(key+": "+vul[key]+'\n');
+                        }
+                        document.getElementById("resultp").append('\n');
+                    }
+                }
+            });
+    
+    }
+    function stop()
+    {
+        stopdic.id=id;
+        stopdic.state="stop"
+        $.ajax({
+                url:'/stop',
+                type:'post',
+                data:stopdic,
+                dataType:"json",
+                error:function(data){
+                    document.getElementById("resultp").append("\nERROR"+data.code+"\n");
+                    document.getElementById("resultp").append(data.msg+"\n");
+                    document.getElementById("resultp").append("Details:\n");
+                    for(var i=0;i<data.details.length;i++){
+                        document.getElementById("resultp").append(data.details[i]);
+                    }
+                },
+                success:function (data) {
+                  var rstid = data.id;
+                    //alert(rstid);
+                    for (var i = 0; i < data.outputs.length; i++) {
+                        var vul = data.outputs[i].vulnerabilities;
+                        document.getElementById("resultp").append("\nfile_name: " + data.outputs[i].file_name + '\n');
+                        document.getElementById("resultp").append("contract_name: " + data.outputs[i].contract_name + '\n');
+                        document.getElementById("resultp").append("Vulnerabilities:\n");
+                        for (var key in vul) {
+                            document.getElementById("resultp").append(key + ": " + vul[key] + '\n');
+                        }
+                        document.getElementById("resultp").append('\n');
+                    }
+                }
+            });
+    }
+    function reset()
+    {
+        resetdic.id=id;
+        resetdic.state="reset"
+        $.ajax({
+                url:'/reset',
+                type:'post',
+                data:resetdic,
+                dataType:"json",
+                error:function(data){
+                    document.getElementById("resultp").append("\nERROR"+data.code+"\n");
+                    document.getElementById("resultp").append(data.msg+"\n");
+                    document.getElementById("resultp").append("Details:\n");
+                    for(var i=0;i<data.details.length;i++){
+                        document.getElementById("resultp").append(data.details[i]);
+                    }
+                },
+                success:function (data) {
+                }
+            });
+        location.replace(document.referrer);
+    }
+    
+    </script> 
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header clearfix">
+            <ul class="nav nav-pills pull-right">
+                <li><a class="btn btn-primary" href="#" onclick="reset()">重置</a></li>
+            </ul>
+            <h3 class="text-muted">智能合约代码安全审计平台</h3>
+        </div>
+    
+        <div class="jumbotron">
+            <h2>开始检测</h2>
+            <p class="lead" style="white-space:normal">提供多种智能合约漏洞检测功能，包括时间戳漏洞、重入漏洞、整数上下溢出漏洞、交易顺序依赖漏洞等的检测</p>
+            <div id="uploaddiv">
+                <input class="hidden" type="file" name="file" id="fileField" multiple="multiple" />
+                <button class="btn btn-info" onclick="upload()">上传文件</button>
+                <div class="btn-group">
+                    <a class="btn btn-info" href="#" onclick="detect()">检测时长</a>
+                    <a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" onclick="gettext($(this).text())">10s</a></li>
+                        <li><a href="#" onclick="gettext($(this).text())">30s</a></li>
+                        <li><a href="#" onclick="gettext($(this).text())">60s</a></li>
+                    </ul>
+                </div>
+                <button class="btn btn-info" onclick="stop()">停止</button> 
+                <button class="btn btn-info" onclick="result()">查看结果</button>
+            </div>
+        </div>
+
+        <p id="resultp">
+        </p>
+        <footer class="footer">
+            <p>&copy; 华中科技大学网络空间安全学院</p>
+        </footer>
+    </div>
+</body>
+    
+
+</html>
