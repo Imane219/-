@@ -1,4 +1,4 @@
-package tester_pool
+package detectorpool
 
 import (
 	"contrplatform/configs"
@@ -8,8 +8,8 @@ import (
 )
 
 type OyenteJson struct {
-	Vul *VulJson	`json:"vulnerabilities"`
-	Coverage string	`json:"evm_code_coverage"`
+	Vul *VulJson    `json:"vulnerabilities"`
+	Coverage string `json:"evm_code_coverage"`
 }
 
 type VulJson struct {
@@ -26,7 +26,15 @@ type OyenteOutput struct {
 	Coverage string `json:"coverage"`
 }
 
-func (t *TesterPool) GetOyenteOutputs(id string, outputs map[string]*Output) error {
+func (dp *DetectorPool) GetOyenteOutputs(id string, outputs map[string]*Output) error {
+	tester,err := dp.detector(id)
+	if err != nil {
+		return err
+	}
+	if err=tester.checkOutputState();err!=nil{
+		return err
+	}
+
 	dirPath := configs.OyenteOutputPath+"/"+id+"/"
 	filesInfo,err := ioutil.ReadDir(dirPath)
 	if err != nil {

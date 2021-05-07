@@ -86,7 +86,7 @@ def oyente_generate(sol_path,exec_path,output_file_path,log_file_path):
     log.close()
 
 def mk_datdir(sol_path,sfuzzdir_path):
-    #copy file to sfuzzdir
+    #copy upload to sfuzzdir
     make_dir(sfuzzdir_path)
     dirs = os.listdir("./")
     for solname in dirs:
@@ -106,7 +106,7 @@ def sfuzz_test(sol_dir_path, exec_path, output_path, test_time, bug_list):
 
     dirs = os.listdir(sol_dir_path)
     if not dirs:
-        print('No file!')
+        print('No upload!')
         return
 
     sfuzz_sol_dir_path = f"{exec_path}/contracts/"
@@ -178,7 +178,7 @@ def sfuzz_test_end(sol_dir_path, exec_path, output_path,test_time,bug_list):
 
     dirs = os.listdir(sol_dir_path)
     if not dirs:
-        print('No file!')
+        print('No upload!')
         return
 
     sfuzz_sol_dir_path = f"{exec_path}/contracts/"
@@ -232,7 +232,7 @@ if __name__ == '__main__':
     oyente_output_file_path += id +"/"
     sfuzz_output_file_path += id + "/"
     if len(sys.argv) > 2:
-        fuzz_time = int(sys.argv[1])
+        fuzz_time = int(sys.argv[2])
         sfuzz_test_time=fuzz_time/2
 
     pyfile_path=os.getcwd()

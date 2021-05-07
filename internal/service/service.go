@@ -3,26 +3,26 @@ package service
 import (
 	"context"
 	"contrplatform/global"
-	"contrplatform/internal/tester_pool"
+	"contrplatform/internal/detectorpool"
 	"github.com/gin-gonic/gin"
 )
 
 type Service struct {
-	ctx context.Context
-	pool *tester_pool.TesterPool
+	ctx  context.Context
+	pool *detectorpool.DetectorPool
 	//Session sessions.Session
 }
 
 func New(ctx *gin.Context) *Service {
 	return &Service{
-		ctx: ctx.Request.Context(),
-		pool: global.TesterPool,
+		ctx:  ctx.Request.Context(),
+		pool: global.DetectorPool,
 		//Session: sessions.Default(ctx),
 	}
 }
 
-func (svc *Service) State(id string) tester_pool.TesterState {
-	return svc.pool.State(id)
+func (svc *Service) DetectorState(id string) detectorpool.DetectorState {
+	return svc.pool.DetectorState(id)
 }
 
 func (svc *Service) GeneID() string {

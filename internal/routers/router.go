@@ -9,15 +9,15 @@ import (
 func NewRouter() *gin.Engine {
 	r := gin.Default()
 
-	r.StaticFS("/static",http.Dir(configs.UploadSavePath))
-	r.StaticFile("/","static/welcome.html")
-	r.StaticFile("/main","static/main.html")
-	r.POST("/upload", UploadContracts)
+	r.StaticFS("/static", http.Dir(configs.UploadSavePath))
+	r.StaticFile("/", "static/welcome.html")
+	r.StaticFile("/main", "static/main.html")
 
 	detection := NewDetection()
-	r.POST("/detect",detection.Start)
-	r.POST("/result",detection.GetResult)
-	r.POST("/stop",detection.Stop)
-	r.DELETE("/reset",detection.Reset)
+	r.POST("/upload", detection.Upload)
+	r.POST("/detect", detection.Start)
+	r.POST("/result", detection.GetResult)
+	r.POST("/stop", detection.Stop)
+	r.DELETE("/reset", detection.Reset)
 	return r
 }

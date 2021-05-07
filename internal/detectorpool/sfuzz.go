@@ -1,4 +1,4 @@
-package tester_pool
+package detectorpool
 
 import (
 	"contrplatform/configs"
@@ -16,7 +16,15 @@ type SfuzzOutput struct {
 	Tracebits    int    `json:"tracebits"` //已覆盖分支数
 }
 
-func (t *TesterPool) GetSfuzzOutputs(id string, outputs map[string]*Output) error {
+func (dp *DetectorPool) GetSfuzzOutputs(id string, outputs map[string]*Output) error {
+	tester,err := dp.detector(id)
+	if err != nil {
+		return err
+	}
+	if err=tester.checkOutputState();err!=nil{
+		return err
+	}
+
 	dirPath := configs.SfuzzOutputPath+"/"+id+"/"
 	filesInfo,err := ioutil.ReadDir(dirPath)
 	if err != nil {

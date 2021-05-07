@@ -1,9 +1,15 @@
 package configs
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"time"
+)
 
 const (
 	RunMode = gin.DebugMode
+	HttpPort = ":7777"
+
+	DetectorExpiredTime = 5*time.Second
 
 	UploadSavePath = "storage/uploads"
 	UploadContrExt = ".sol"

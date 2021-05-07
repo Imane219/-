@@ -1,4 +1,4 @@
-package tester_pool
+package detectorpool
 
 
 type Output struct {
@@ -6,7 +6,7 @@ type Output struct {
 	ContractName string        `json:"contract_name"`
 	Sfuzz        *SfuzzOutput  `json:"sfuzz"`
 	Oyente       *OyenteOutput `json:"oyente"`
-	Vul	*VulOutput	`json:"vulnerabilities"`
+	Vul	*VulOutput          `json:"vulnerabilities"`
 }
 
 type VulOutput struct {

@@ -2,6 +2,7 @@ package upload
 
 import (
 	"contrplatform/configs"
+	"errors"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -74,3 +75,40 @@ func GetDirFiles(dirPath string) []string {
 	}
 	return filesName
 }
+
+func FileUpload(fileHeader *multipart.FileHeader, fileType FileType,
+	pathSuffix string) error {
+	fileName := fileHeader.Filename
+	//判断拓展名
+	if !CheckContainExt(fileType,fileName){
+		return errors.New("文件扩展名错误")
+	}
+	//判断文件保存路径是否存在并创建
+	//文件保存路径: /storage/uploads/sessionID/
+	uploadSavePath := configs.UploadSavePath+"/"+ pathSuffix
+	if CheckSavePathNotExist(uploadSavePath) {
+		if err := CreatSavePath(uploadSavePath,os.ModePerm);err!=nil{
+			return errors.New("创建文件夹失败")
+		}
+	}
+	//检测文件是否权限不足
+	if CheckNotPermission(uploadSavePath) {
+		return errors.New("文件权限不足")
+	}
+	file,err := fileHeader.Open()
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	//判断文件大小
+	if CheckOutMaxSize(fileType,file){
+		return errors.New("文件大小过大")
+	}
+	dstPath:=uploadSavePath+"/"+fileName
+	//上传文件
+	if err:=SaveFile(fileHeader,dstPath);err!=nil{
+		return err
+	}
+	return nil
+}
+
