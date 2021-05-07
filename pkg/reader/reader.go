@@ -18,20 +18,20 @@ func New(rd io.Reader) *LineReader {
 }
 
 func (lr *LineReader) MustString() string {
-	str,err:= lr.b.ReadString('\n')
-	if err!=nil{
+	str, err := lr.b.ReadString('\n')
+	if err != nil {
 		return ""
 	}
-	return strings.TrimSuffix(str,"\n")
+	return strings.TrimSuffix(str, "\n")
 }
 
 func (lr *LineReader) MustInt() int {
-	str,err:=lr.b.ReadString('\n')
-	if err != nil{
+	str, err := lr.b.ReadString('\n')
+	if err != nil {
 		return 0
 	}
-	str = strings.TrimSuffix(str,"\n")
-	n,err:= strconv.Atoi(str)
+	str = strings.TrimSuffix(str, "\n")
+	n, err := strconv.Atoi(str)
 	if err != nil {
 		return 0
 	}
@@ -39,14 +39,14 @@ func (lr *LineReader) MustInt() int {
 }
 
 func (lr *LineReader) MustBool() bool {
-	str,err:=lr.b.ReadString('\n')
+	str, err := lr.b.ReadString('\n')
 	if err != nil {
 		return false
 	}
-	str = strings.TrimSuffix(str,"\n")
-	n,err:=strconv.Atoi(str)
-	if err!=nil{
+	str = strings.TrimSuffix(str, "\n")
+	n, err := strconv.Atoi(str)
+	if err != nil {
 		return false
 	}
-	return n!=0
+	return n != 0
 }
