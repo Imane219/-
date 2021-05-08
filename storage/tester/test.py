@@ -6,7 +6,7 @@ import time
 import logging
 import sys
 
-sol_path = "./uploads/"
+sol_path = "../uploads/"
 sfuzzdir_path = "./sfuzzdir/"
 oyente_path = "./oyente-new/oyente/"
 sfuzz_path = "./sFuzz-new/build/fuzzer/"
@@ -73,15 +73,13 @@ def oyente_generate(sol_path, exec_path):
             # 编译
             solcbin = subprocess.getstatusoutput(f"solc --bin-runtime --abi '{sol_path}/{filename}' -o ./")
             if (solcbin[0] != 0):
-                logging.debug(f"solc return {solcbin[0]}, output:")
-                logging.debug(solcbin[1])
+                logging.debug(f"solc return {solcbin[0]}, output:\n{solcbin[1]}")
 
             solname = filename[:-4]
             # oyente
             subprocess.getstatusoutput(f"solc use 0.4.22")
             k = subprocess.getstatusoutput(f"python2.7 {exec_path}/oyente.py -s {solname}.bin-runtime -b -ce -j")
-            logging.debug(f"oyente return {k[0]}, output:")
-            logging.debug(k[1])
+            logging.debug(f"oyente return {k[0]}, output:\n{k[1]}")
             logging.debug(f"========oyente end=========")
 
     # 删除编译产生的多余文件（需要更新，可能生成多个文件）
@@ -96,11 +94,11 @@ def mk_datdir(sol_path, sfuzzdir_path):
     将oy输出拷贝到sfuzz文件夹
     (sol文件所在路径，sfuzz所在路径)
     """
-    logging.debug("copying dir to sfuzz dir...")
     make_dir(sfuzzdir_path)
     dirs = os.listdir("./")
     for solname in dirs:
         if(os.path.isdir(f"./{solname}") and os.path.exists(f"./{solname}/{solname}.txt")):
+            logging.debug(f"file {solname} has path, moving to sFuzz ...")
             copy_dir(f"./{solname}/", f"{sfuzzdir_path}/{solname}/")
             logging.debug(solname)
             shutil.rmtree(f"./{solname}")
@@ -132,8 +130,7 @@ def sfuzz_test(sol_dir_path, exec_path, test_time):
             logging.debug(f"Start fuzzing {sol_name}")
             is_tested = True
             try:
-                tmpinfo = subprocess.getstatusoutput(f"./fuzzer -g -r 0 -d {int(test_time)} && chmod +x ./fuzzMe")
-                #logging.debug(tmpinfo)
+                subprocess.getstatusoutput(f"./fuzzer -g -r 0 -d {int(test_time)} && chmod +x ./fuzzMe")
                 test_info = subprocess.getstatusoutput(f"./fuzzMe")
             except:
                 is_tested = False
@@ -163,6 +160,7 @@ def copy_predicates(sfuzz_path, sol_path):
     for predicate in plist:
         if (predicate.endswith(".txt")):
             solname = predicate[:-4]
+            logging.debug(f"file {solname} has predicate, coping to oyente ...")
             make_dir(f"./{solname}")
             shutil.copyfile(
                 f"{sfuzz_path}/predicates/{predicate}", f"./{solname}/{predicate}")
@@ -171,6 +169,7 @@ def copy_predicates(sfuzz_path, sol_path):
         if sol.endswith(".sol"):
             solname = sol[:-4]
             if (solname + ".txt" not in plist):
+                logging.debug(f"file {solname} has no predicate, creating blank file ...")
                 make_dir(f"./{solname}")
                 subprocess.getstatusoutput(f"touch ./{solname}/{solname}.txt")
 
@@ -179,7 +178,7 @@ def sfuzz_test_end(sol_path, sol_dir_path, exec_path, test_time, sfuzz_output_pa
     """
     sfuzz第二次运行(sol文件和dat所在文件夹，sfuzz文件夹，sfuzz单次测试时间)
     """
-    logging.debug("========sfuzz start=========")
+    logging.debug("========sfuzz start second time=========")
     subprocess.getstatusoutput(f"solc use 0.4.24")
     make_dir(f"{exec_path}/logger/")
     make_dir(f"{exec_path}/testcases/")
@@ -204,8 +203,7 @@ def sfuzz_test_end(sol_path, sol_dir_path, exec_path, test_time, sfuzz_output_pa
         logging.debug('Start fuzzing ' + sol_name)
         is_tested = True
         try:
-            tmpinfo = subprocess.getstatusoutput(f"./fuzzer -g -r 0 -d {int(test_time)} && chmod +x ./fuzzMe")
-            #logging.debug(tmpinfo)
+            subprocess.getstatusoutput(f"./fuzzer -g -r 0 -d {int(test_time)} && chmod +x ./fuzzMe")
             test_info = subprocess.getstatusoutput(f'./fuzzMe')
         except:
             is_tested = False
@@ -230,7 +228,7 @@ def sfuzz_test_end(sol_path, sol_dir_path, exec_path, test_time, sfuzz_output_pa
             if(txtoutput.endswith(r".txt")):
                 shutil.copy(f"{sfuzz_sol_dir_path}/{txtoutput}",f"{sfuzz_output_path}/{sol_name}.sol.txt")
 
-    logging.debug("========sfuzz end=========")
+    logging.debug("========sfuzz end second time=========")
 
 
 def move_oyente_output(oyente_output_path):
@@ -250,7 +248,7 @@ if __name__ == '__main__':
         fuzz_time = int(sys.argv[2])
         sfuzz_test_time = fuzz_time/2
         pyfile_path = os.getcwd()
-        logging.debug(f"\ntest path is {pyfile_path}\ntotal fuzzing time {fuzz_time}\ntesting sol file in {sol_path}...")
+        logging.debug(f"\ntest path is {pyfile_path}\ntotal fuzzing time {fuzz_time}\ntesting sol file in {sol_path} ...")
         # sfuzz运行
         os.chdir(pyfile_path)
         sfuzz_test(sol_path, sfuzz_path, sfuzz_test_time)

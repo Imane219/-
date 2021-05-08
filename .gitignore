@@ -1,0 +1,9 @@
+storage/tester/oyente-new/
+storage/tester/sFuzz-new/
+storage/tester/sfuzzoutput/
+storage/tester/dependence/
+storage/tester/.vscode/
+storage/tester/oyenteoutput/
+storage/tester/sfuzzdir/
+storage/tester/*.log
+storage/uploads/
