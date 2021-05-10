@@ -1,7 +1,6 @@
 package detectorpool
 
 import (
-	"contrplatform/configs"
 	"contrplatform/pkg/reader"
 	"io/ioutil"
 	"os"
@@ -25,7 +24,7 @@ func (dp *DetectorPool) GetSfuzzOutputs(id string, outputs map[string]*Output) e
 		return err
 	}
 
-	dirPath := configs.SfuzzOutputPath + "/" + id + "/"
+	dirPath := poolSetting.SfuzzOutputPath + "/" + id + "/"
 	filesInfo, err := ioutil.ReadDir(dirPath)
 	if err != nil {
 		return err

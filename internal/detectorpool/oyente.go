@@ -1,7 +1,6 @@
 package detectorpool
 
 import (
-	"contrplatform/configs"
 	"encoding/json"
 	"io/ioutil"
 	"strings"
@@ -35,7 +34,7 @@ func (dp *DetectorPool) GetOyenteOutputs(id string, outputs map[string]*Output) 
 		return err
 	}
 
-	dirPath := configs.OyenteOutputPath+"/"+id+"/"
+	dirPath := poolSetting.OyenteOutputPath+"/"+id+"/"
 	filesInfo,err := ioutil.ReadDir(dirPath)
 	if err != nil {
 		return err

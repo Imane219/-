@@ -1,7 +1,7 @@
-package routers
+package api
 
 import (
-	"contrplatform/configs"
+	"contrplatform/global"
 	"log"
 	"path/filepath"
 	"reflect"
@@ -9,7 +9,7 @@ import (
 )
 
 func Test_getIdFilesName(t *testing.T) {
-	path,_ := filepath.Abs(configs.UploadSavePath+"/61637")
+	path,_ := filepath.Abs(global.PoolSetting.UploadSavePath+"/61637")
 	log.Println(path)
 	type args struct {
 		id string

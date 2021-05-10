@@ -2,7 +2,6 @@ package detectorpool
 
 import (
 	"context"
-	"contrplatform/configs"
 	"log"
 	"os"
 	"os/exec"
@@ -10,16 +9,16 @@ import (
 )
 
 type detector struct {
-	id string
-	state       DetectorState
-	cmd         *exec.Cmd
-	rwMutex     sync.RWMutex
-	cancelFunc  context.CancelFunc
+	id         string
+	state      DetectorState
+	cmd        *exec.Cmd
+	rwMutex    sync.RWMutex
+	cancelFunc context.CancelFunc
 }
 
 func newDetector(id string) *detector {
-	d:= &detector{
-		id: id,
+	d := &detector{
+		id:    id,
 		state: StateInit,
 	}
 	return d
@@ -31,19 +30,17 @@ func (dt *detector) delete() error {
 		dt.cancelFunc()
 	}
 	dt.rwMutex.Unlock()
-	if err := os.RemoveAll(configs.OyenteOutputPath + "/" + dt.id); err != nil {
+	if err := os.RemoveAll(poolSetting.OyenteOutputPath + "/" + dt.id); err != nil {
 		return err
 	}
-	if err := os.RemoveAll(configs.SfuzzOutputPath + "/" + dt.id); err != nil {
+	if err := os.RemoveAll(poolSetting.SfuzzOutputPath + "/" + dt.id); err != nil {
 		return err
 	}
-	if err := os.RemoveAll(configs.UploadSavePath + "/" + dt.id); err != nil {
+	if err := os.RemoveAll(poolSetting.UploadSavePath + "/" + dt.id); err != nil {
 		return err
 	}
 	return nil
 }
-
-
 
 func (dt *detector) State() DetectorState {
 	dt.rwMutex.RLock()
@@ -64,7 +61,7 @@ func (dt *detector) checkResetDetectionState() error {
 	dt.rwMutex.Lock()
 	defer dt.rwMutex.Unlock()
 	if dt.state != StateStopped {
-		return newStateError(dt.state,StateStopped)
+		return newStateError(dt.state, StateStopped)
 	}
 	dt.state = StateNull
 	return nil
@@ -74,7 +71,7 @@ func (dt *detector) checkUploadState() error {
 	dt.rwMutex.RLock()
 	defer dt.rwMutex.RUnlock()
 	if dt.state != StateInit {
-		return newStateError(dt.state,StateInit)
+		return newStateError(dt.state, StateInit)
 	}
 	return nil
 }
@@ -82,12 +79,13 @@ func (dt *detector) checkUploadState() error {
 func (dt *detector) startCmd(id, runTime string) error {
 	dt.rwMutex.Lock()
 	defer dt.rwMutex.Unlock()
-	if dt.state!=StateInit {
-		return newStateError(dt.state,StateInit)
+	if dt.state != StateInit {
+		return newStateError(dt.state, StateInit)
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	dt.cancelFunc = cancel
-	dt.cmd = exec.CommandContext(ctx, "python", configs.TestScriptPath, id, runTime)
+	dt.cmd = exec.CommandContext(ctx, "python",
+		poolSetting.TestScriptPath, id, runTime)
 	//stdout,err:=dt.cmd.StdoutPipe()
 	//if err != nil {
 	//	cancel()
@@ -136,9 +134,9 @@ func (dt *detector) stopCmd() error {
 	if dt.state == StateRunning {
 		dt.cancelFunc()
 		log.Print("cancelFunc")
-		dt.state=StateStopped
+		dt.state = StateStopped
 	} else if dt.state != StateStopped {
-		return newStateError(dt.state,StateRunning,StateStopped)
+		return newStateError(dt.state, StateRunning, StateStopped)
 	}
 	return nil
 	//dt.rwMutex.Lock()

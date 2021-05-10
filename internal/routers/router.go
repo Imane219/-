@@ -1,19 +1,23 @@
 package routers
 
 import (
-	"contrplatform/configs"
+	"contrplatform/global"
+	"contrplatform/internal/middleware"
+	"contrplatform/internal/routers/api"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 func NewRouter() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
 
-	r.StaticFS("/static", http.Dir(configs.UploadSavePath))
-	r.StaticFile("/", "static/welcome.html")
-	r.StaticFile("/main", "static/main.html")
+	//r.Use(middleware.AccessLog())
+	r.Use(middleware.Recovery())
 
-	detection := NewDetection()
+	r.StaticFS("/static", http.Dir(global.AppSetting.FrontendPath))
+	r.StaticFile("/", "static/home.html")
+
+	detection := api.NewDetection()
 	r.POST("/upload", detection.Upload)
 	r.POST("/detect", detection.Start)
 	r.POST("/result", detection.GetResult)
