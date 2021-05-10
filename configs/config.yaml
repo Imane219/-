@@ -1,0 +1,20 @@
+Server:
+  RunMode: debug
+  HttpPort: 7777
+App:
+  FrontendPath: static
+Log:
+  SavePath: storage/logs # 日志存储路径
+  FileName: app          # 日志名
+  FileExt: .log          # 日志拓展名
+  MaxSize: 600
+  MaxAge: 10
+Pool:
+  UploadSavePath: storage/uploads
+  UploadContrExts:
+    - .sol
+  UploadContrMaxSize: 5
+  DetectorExpiredTime: 15s
+  TestScriptPath: storage/tester/tmp.py
+  OyenteOutputPath: storage/tester/oyenteoutput
+  SfuzzOutputPath: storage/tester/sfuzzoutput
